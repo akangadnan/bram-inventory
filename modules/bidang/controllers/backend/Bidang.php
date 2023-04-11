@@ -166,36 +166,41 @@ class Bidang extends Admin
 		$data_bidang = $this->db->where(['bidang_nama' => $nama_bidang, 'bidang_id' => $id])->get('bidang')->row();
 
 		if ($this->form_validation->run()) {
-			$save_data = [
-				'bidang_nama' 	=> $nama_bidang,
-				'bidang_subyek' => $this->input->post('bidang_subyek'),
-			];
-
-			$save_bidang = $this->model_bidang->change($id, $save_data);
-
-			if ($save_bidang) {
-				if ($this->input->post('save_type') == 'stay') {
-					$this->data['success'] = true;
-					$this->data['id'] 	   = $id;
-					$this->data['message'] = cclang('success_update_data_stay', [
-						anchor('administrator/bidang', ' Go back to list')
-					]);
+			if (count($data_bidang) > 0) {
+				$this->data['success'] = false;
+				$this->data['message'] = 'Data sudah tersedia!';
+			}else{
+				$save_data = [
+					'bidang_nama' 	=> $nama_bidang,
+					'bidang_subyek' => $this->input->post('bidang_subyek'),
+				];
+	
+				$save_bidang = $this->model_bidang->change($id, $save_data);
+	
+				if ($save_bidang) {
+					if ($this->input->post('save_type') == 'stay') {
+						$this->data['success'] = true;
+						$this->data['id'] 	   = $id;
+						$this->data['message'] = cclang('success_update_data_stay', [
+							anchor('administrator/bidang', ' Go back to list')
+						]);
+					} else {
+						set_message(
+							cclang('success_update_data_redirect', [
+						]), 'success');
+	
+						$this->data['success'] = true;
+						$this->data['redirect'] = base_url('administrator/bidang');
+					}
 				} else {
-					set_message(
-						cclang('success_update_data_redirect', [
-					]), 'success');
-
-            		$this->data['success'] = true;
-					$this->data['redirect'] = base_url('administrator/bidang');
-				}
-			} else {
-				if ($this->input->post('save_type') == 'stay') {
-					$this->data['success'] = false;
-					$this->data['message'] = cclang('data_not_change');
-				} else {
-            		$this->data['success'] = false;
-            		$this->data['message'] = cclang('data_not_change');
-					$this->data['redirect'] = base_url('administrator/bidang');
+					if ($this->input->post('save_type') == 'stay') {
+						$this->data['success'] = false;
+						$this->data['message'] = cclang('data_not_change');
+					} else {
+						$this->data['success'] = false;
+						$this->data['message'] = cclang('data_not_change');
+						$this->data['redirect'] = base_url('administrator/bidang');
+					}
 				}
 			}
 		} else {
