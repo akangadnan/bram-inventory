@@ -150,8 +150,7 @@ class Bidang extends Admin
 	*
 	* @var $id String
 	*/
-	public function edit_save($id)
-	{
+	public function edit_save($id) {
 		if (!$this->is_allowed('bidang_update', false)) {
 			echo json_encode([
 				'success' => false,
@@ -159,35 +158,22 @@ class Bidang extends Admin
 				]);
 			exit;
 		}
-				$this->form_validation->set_rules('bidang_nama', 'Nama Bidang', 'trim|required');
-		
 
-		
+		$this->form_validation->set_rules('bidang_nama', 'Nama Bidang', 'trim|required');
+
+		$nama_bidang = $this->input->post('bidang_nama');
+
+		$data_bidang = $this->db->where(['bidang_nama' => $nama_bidang, 'bidang_id' => $id])->get('bidang')->row();
+
 		if ($this->form_validation->run()) {
-		
 			$save_data = [
-				'bidang_nama' => $this->input->post('bidang_nama'),
+				'bidang_nama' 	=> $nama_bidang,
 				'bidang_subyek' => $this->input->post('bidang_subyek'),
 			];
 
-			
-
-			
-//$save_data['_example'] = $this->input->post('_example');
-			
-
-
-			
-			
 			$save_bidang = $this->model_bidang->change($id, $save_data);
 
 			if ($save_bidang) {
-
-				
-				
-
-				
-				
 				if ($this->input->post('save_type') == 'stay') {
 					$this->data['success'] = true;
 					$this->data['id'] 	   = $id;
