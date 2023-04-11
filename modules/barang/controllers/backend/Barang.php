@@ -173,39 +173,57 @@ class Barang extends Admin {
 		$this->form_validation->set_rules('barang_kategori_barang_id', 'Katgeori Barang', 'trim|required');
 		$this->form_validation->set_rules('barang_nama', 'Nama Barang', 'trim|required');
 		$this->form_validation->set_rules('barang_satuan_id', 'Satuan', 'trim|required');
+
+		$nama_barang 		= $this->input->post('barang_nama');
+		$kategori_barang 	= $this->input->post('barang_kategori_barang_id');
+		$satuan_barang 		= $this->input->post('barang_satuan_id');
+
+		$conditions = [
+			'barang_nama' 				=> $nama_barang,
+			'barang_kategori_barang_id' => $kategori_barang,
+			'barang_satuan_id' 			=> $satuan_barang,
+			'barang_id !=' 				=> $id,
+		];
+
+		$barang = $this->db->where($conditions)->get('barang')->row();
 		
 		if ($this->form_validation->run()) {
-			$save_data = [
-				'barang_kategori_barang_id' => $this->input->post('barang_kategori_barang_id'),
-				'barang_nama' 				=> $this->input->post('barang_nama'),
-				'barang_satuan_id' 			=> $this->input->post('barang_satuan_id'),
-			];
+			if (count($barang) > 0) {
+				$this->data['success'] = false;
+				$this->data['message'] = 'Data sudah tersedia!';
+			}else{
+				$save_data = [
+					'barang_kategori_barang_id' => $kategori_barang,
+					'barang_nama' 				=> $nama_barang,
+					'barang_satuan_id' 			=> $satuan_barang,
+				];
 
-			$save_barang = $this->model_barang->change($id, $save_data);
-
-			if ($save_barang) {
-				if ($this->input->post('save_type') == 'stay') {
-					$this->data['success'] = true;
-					$this->data['id'] 	   = $id;
-					$this->data['message'] = cclang('success_update_data_stay', [
-						anchor('administrator/barang', ' Go back to list')
-					]);
+				$save_barang = $this->model_barang->change($id, $save_data);
+	
+				if ($save_barang) {
+					if ($this->input->post('save_type') == 'stay') {
+						$this->data['success'] = true;
+						$this->data['id'] 	   = $id;
+						$this->data['message'] = cclang('success_update_data_stay', [
+							anchor('administrator/barang', ' Go back to list')
+						]);
+					} else {
+						set_message(
+							cclang('success_update_data_redirect', [
+						]), 'success');
+	
+						$this->data['success'] = true;
+						$this->data['redirect'] = base_url('administrator/barang');
+					}
 				} else {
-					set_message(
-						cclang('success_update_data_redirect', [
-					]), 'success');
-
-            		$this->data['success'] = true;
-					$this->data['redirect'] = base_url('administrator/barang');
-				}
-			} else {
-				if ($this->input->post('save_type') == 'stay') {
-					$this->data['success'] = false;
-					$this->data['message'] = cclang('data_not_change');
-				} else {
-            		$this->data['success'] = false;
-            		$this->data['message'] = cclang('data_not_change');
-					$this->data['redirect'] = base_url('administrator/barang');
+					if ($this->input->post('save_type') == 'stay') {
+						$this->data['success'] = false;
+						$this->data['message'] = cclang('data_not_change');
+					} else {
+						$this->data['success'] = false;
+						$this->data['message'] = cclang('data_not_change');
+						$this->data['redirect'] = base_url('administrator/barang');
+					}
 				}
 			}
 		} else {

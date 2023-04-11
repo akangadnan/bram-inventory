@@ -241,7 +241,7 @@
 					}
 					$('.message').printMessage({
 						message: res.message,
-						type: 'warning'
+						type: 'danger'
 					});
 				}
 
@@ -249,7 +249,7 @@
 			.fail(function () {
 				$('.message').printMessage({
 					message: 'Error save data',
-					type: 'warning'
+					type: 'danger'
 				});
 			})
 			.always(function () {

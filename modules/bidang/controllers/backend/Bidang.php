@@ -53,8 +53,7 @@ class Bidang extends Admin
 	* Add new bidangs
 	*
 	*/
-	public function add()
-	{
+	public function add() {
 		$this->is_allowed('bidang_add');
 
 		$this->template->title('Bidang New');
@@ -66,8 +65,7 @@ class Bidang extends Admin
 	*
 	* @return JSON
 	*/
-	public function add_save()
-	{
+	public function add_save() {
 		if (!$this->is_allowed('bidang_add', false)) {
 			echo json_encode([
 				'success' => false,
@@ -75,68 +73,55 @@ class Bidang extends Admin
 				]);
 			exit;
 		}
-		
-		
 
 		$this->form_validation->set_rules('bidang_nama', 'Nama Bidang', 'trim|required');
-		
 
-		
+		$nama_bidang = $this->input->post('bidang_nama');
+
+		$data_bidang = $this->db->where('bidang_nama', $nama_bidang)->get('bidang')->row();
 
 		if ($this->form_validation->run()) {
-		
-			$save_data = [
-				'bidang_nama' => $this->input->post('bidang_nama'),
-				'bidang_subyek' => $this->input->post('bidang_subyek'),
-				'bidang_user_created' => get_user_data('id'),				'bidang_created_at' => date('Y-m-d H:i:s'),
-			];
-
-			
-			
-//$save_data['_example'] = $this->input->post('_example');
-			
-
-
-
-			
-			
-			$save_bidang = $id = $this->model_bidang->store($save_data);
-            
-
-			if ($save_bidang) {
+			if (count($data_bidang) > 0) {
+				$this->data['success'] = false;
+				$this->data['message'] = 'Data sudah tersedia! <a href="'.site_url('administrator/bidang/view/'.$data_bidang->bidang_id).'">Lihat Data</a>';
+			}else{
+				$save_data = [
+					'bidang_nama' 			=> $nama_bidang,
+					'bidang_subyek' 		=> $this->input->post('bidang_subyek'),
+					'bidang_user_created' 	=> get_user_data('id'),
+					'bidang_created_at' 	=> date('Y-m-d H:i:s'),
+				];
 				
-				$id = $save_bidang;
-				
-				
-					
-				
-				if ($this->input->post('save_type') == 'stay') {
-					$this->data['success'] = true;
-					$this->data['id'] 	   = $save_bidang;
-					$this->data['message'] = cclang('success_save_data_stay', [
-						anchor('administrator/bidang/edit/' . $save_bidang, 'Edit Bidang'),
-						anchor('administrator/bidang', ' Go back to list')
-					]);
+				$save_bidang = $id = $this->model_bidang->store($save_data);
+	
+				if ($save_bidang) {
+					if ($this->input->post('save_type') == 'stay') {
+						$this->data['success'] = true;
+						$this->data['id'] 	   = $save_bidang;
+						$this->data['message'] = cclang('success_save_data_stay', [
+							anchor('administrator/bidang/edit/' . $save_bidang, 'Edit Bidang'),
+							anchor('administrator/bidang', ' Go back to list')
+						]);
+					} else {
+						set_message(
+							cclang('success_save_data_redirect', [
+							anchor('administrator/bidang/edit/' . $save_bidang, 'Edit Bidang')
+						]), 'success');
+	
+						$this->data['success'] = true;
+						$this->data['redirect'] = base_url('administrator/bidang');
+					}
 				} else {
-					set_message(
-						cclang('success_save_data_redirect', [
-						anchor('administrator/bidang/edit/' . $save_bidang, 'Edit Bidang')
-					]), 'success');
-
-            		$this->data['success'] = true;
-					$this->data['redirect'] = base_url('administrator/bidang');
-				}
-			} else {
-				if ($this->input->post('save_type') == 'stay') {
-					$this->data['success'] = false;
-					$this->data['message'] = cclang('data_not_change');
-				} else {
-            		$this->data['success'] = false;
-            		$this->data['message'] = cclang('data_not_change');
-					$this->data['redirect'] = base_url('administrator/bidang');
+					if ($this->input->post('save_type') == 'stay') {
+						$this->data['success'] = false;
+						$this->data['message'] = cclang('data_not_change');
+					} else {
+						$this->data['success'] = false;
+						$this->data['message'] = cclang('data_not_change');
+						$this->data['redirect'] = base_url('administrator/bidang');
+					}
 				}
 			}
-
 		} else {
 			$this->data['success'] = false;
 			$this->data['message'] = 'Opss validation failed';
@@ -151,8 +136,7 @@ class Bidang extends Admin
 	*
 	* @var $id String
 	*/
-	public function edit($id)
-	{
+	public function edit($id) {
 		$this->is_allowed('bidang_update');
 
 		$this->data['bidang'] = $this->model_bidang->find($id);

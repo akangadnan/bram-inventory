@@ -25,6 +25,8 @@ application/controllers/api/Key.php
 index.php
 .htaccess
 
+package/
+
 .vscode
 
 apidoc/api_data.js
