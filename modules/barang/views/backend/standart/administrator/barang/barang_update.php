@@ -92,7 +92,7 @@
 						<div class="form-group group-barang_kategori_barang_id">
 							<label for="barang_kategori_barang_id" class="col-sm-2 control-label">Katgeori Barang <i class="required">*</i></label>
 							<div class="col-sm-8">
-								<select class="form-control chosen chosen-select-deselect" name="barang_kategori_barang_id" id="barang_kategori_barang_id" data-placeholder="Select Katgeori Barang">
+								<select class="form-control chosen chosen-select-deselect" name="barang_kategori_barang_id" id="barang_kategori_barang_id" data-placeholder="Select Kategori Barang">
 									<option value=""></option>
 									<?php foreach (db_get_all_data('kategori_barang') as $row): ?>
 									<option <?= $row->kategori_barang_id == $barang->barang_kategori_barang_id ? 'selected' : ''; ?> value="<?= $row->kategori_barang_id ?>"><?= $row->kategori_barang_nama; ?></option>
