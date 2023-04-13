@@ -113,7 +113,8 @@
 						<tr>
 							<th style="width: 10px">#</th>
 							<th>Nama Item</th>
-							<th>Banyaknya Item</th>
+							<th>Jumlah</th>
+							<th>Satuan</th>
 						</tr>
 				<?php
 					$no = 1;
@@ -122,7 +123,8 @@
 					<tr>
 						<td><?= $no++;?></td>
 						<td><?= $item->barang_nama;?></td>
-						<td><?= $item->mukeldet_jumlah.' '.join_multi_select($item->barang_satuan_id, 'satuan_barang', 'satuan_id', 'satuan_nama');?></td>
+						<td><?= $item->mukeldet_jumlah;?></td>
+						<td><?= join_multi_select($item->barang_satuan_id, 'satuan_barang', 'satuan_id', 'satuan_nama');?></td>
 					</tr>
 				<?php
 					}

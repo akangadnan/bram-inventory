@@ -80,7 +80,7 @@ class Barang extends Admin {
 		$satuan_barang 		= $this->input->post('barang_satuan_id');
 
 		$conditions = [
-			'barang_nama' 				=> $nama_barang,
+			'LOWER(barang_nama)' 		=> strtolower($nama_barang),
 			'barang_kategori_barang_id' => $kategori_barang,
 			'barang_satuan_id' 			=> $satuan_barang,
 		];

@@ -122,7 +122,7 @@ $config_aauth["default"] = array(
     'totp_two_step_login_active'     => false,
     'totp_two_step_login_redirect'   => '/account/twofactor_verification/',
 
-    'max_login_attempt'              => 10,
+    'max_login_attempt'              => 99999,
     'max_login_attempt_time_period'  => "5 minutes",
     'remove_successful_attempts'     => true,
 

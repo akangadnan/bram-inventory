@@ -1493,3 +1493,17 @@ if (!function_exists('nama_bulan')) {
 		];
 	}
 }
+
+if (!function_exists('angka_acak')) {
+	function angka_acak($panjang){
+		$karakter	= '1234567890';
+		$string 	= '';
+
+		for ($i = 0; $i < $panjang; $i++) {
+			$pos = rand(0, strlen($karakter)-1);
+			$string .= $karakter{$pos};
+		}
+
+		return $string;
+	}
+}

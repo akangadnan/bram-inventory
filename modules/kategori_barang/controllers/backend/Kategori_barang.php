@@ -9,11 +9,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 *| Kategori Barang site
 *|
 */
-class Kategori_barang extends Admin	
-{
-	
-	public function __construct()
-	{
+class Kategori_barang extends Admin {
+	public function __construct() {
 		parent::__construct();
 
 		$this->load->model('model_kategori_barang');
@@ -26,8 +23,7 @@ class Kategori_barang extends Admin
 	*
 	* @var $offset String
 	*/
-	public function index($offset = 0)
-	{
+	public function index($offset = 0) {
 		$this->is_allowed('kategori_barang_list');
 
 		$filter = $this->input->get('q');
@@ -53,8 +49,7 @@ class Kategori_barang extends Admin
 	* Add new kategori_barangs
 	*
 	*/
-	public function add()
-	{
+	public function add() {
 		$this->is_allowed('kategori_barang_add');
 
 		$this->template->title('Kategori Barang New');
@@ -66,8 +61,7 @@ class Kategori_barang extends Admin
 	*
 	* @return JSON
 	*/
-	public function add_save()
-	{
+	public function add_save() {
 		if (!$this->is_allowed('kategori_barang_add', false)) {
 			echo json_encode([
 				'success' => false,
@@ -75,63 +69,54 @@ class Kategori_barang extends Admin
 				]);
 			exit;
 		}
-		
-		
 
 		$this->form_validation->set_rules('kategori_barang_nama', 'Nama Kategori', 'trim|required');
-		
 
-		
+		$nama_kategori = $this->input->post('kategori_barang_nama');
+
+		$data_kategori = $this->db->where("LOWER(kategori_barang_nama)", strtolower($nama_kategori))->get('kategori_barang')->row();
 
 		if ($this->form_validation->run()) {
-		
-			$save_data = [
-				'kategori_barang_nama' => $this->input->post('kategori_barang_nama'),
-				'kategori_barang_user_created' => get_user_data('id'),				'kategori_barang_created_at' => date('Y-m-d H:i:s'),
-			];
-
-			
-			
-
-
-
-			
-			
-			$save_kategori_barang = $id = $this->model_kategori_barang->store($save_data);
-            
-
-			if ($save_kategori_barang) {
-				
-				
-					
-				
-				if ($this->input->post('save_type') == 'stay') {
-					$this->data['success'] = true;
-					$this->data['id'] 	   = $save_kategori_barang;
-					$this->data['message'] = cclang('success_save_data_stay', [
-						anchor('administrator/kategori_barang/edit/' . $save_kategori_barang, 'Edit Kategori Barang'),
-						anchor('administrator/kategori_barang', ' Go back to list')
-					]);
+			if (count($data_kategori) > 0) {
+				$this->data['success'] = false;
+				$this->data['message'] = 'Data sudah tersedia! <a href="'.site_url('administrator/kategori_barang/view/'.$data_kategori->kategori_barang_id).'">Lihat Data</a>';
+			}else{
+				$save_data = [
+					'kategori_barang_nama' 			=> $nama_kategori,
+					'kategori_barang_user_created' 	=> get_user_data('id'),
+					'kategori_barang_created_at' 	=> date('Y-m-d H:i:s'),
+				];
+	
+				$save_kategori_barang = $this->model_kategori_barang->store($save_data);
+	
+				if ($save_kategori_barang) {
+					if ($this->input->post('save_type') == 'stay') {
+						$this->data['success'] = true;
+						$this->data['id'] 	   = $save_kategori_barang;
+						$this->data['message'] = cclang('success_save_data_stay', [
+							anchor('administrator/kategori_barang/edit/' . $save_kategori_barang, 'Edit Kategori Barang'),
+							anchor('administrator/kategori_barang', ' Go back to list')
+						]);
+					} else {
+						set_message(
+							cclang('success_save_data_redirect', [
+							anchor('administrator/kategori_barang/edit/' . $save_kategori_barang, 'Edit Kategori Barang')
+						]), 'success');
+	
+						$this->data['success'] = true;
+						$this->data['redirect'] = base_url('administrator/kategori_barang');
+					}
 				} else {
-					set_message(
-						cclang('success_save_data_redirect', [
-						anchor('administrator/kategori_barang/edit/' . $save_kategori_barang, 'Edit Kategori Barang')
-					]), 'success');
-
-            		$this->data['success'] = true;
-					$this->data['redirect'] = base_url('administrator/kategori_barang');
-				}
-			} else {
-				if ($this->input->post('save_type') == 'stay') {
-					$this->data['success'] = false;
-					$this->data['message'] = cclang('data_not_change');
-				} else {
-            		$this->data['success'] = false;
-            		$this->data['message'] = cclang('data_not_change');
-					$this->data['redirect'] = base_url('administrator/kategori_barang');
+					if ($this->input->post('save_type') == 'stay') {
+						$this->data['success'] = false;
+						$this->data['message'] = cclang('data_not_change');
+					} else {
+						$this->data['success'] = false;
+						$this->data['message'] = cclang('data_not_change');
+						$this->data['redirect'] = base_url('administrator/kategori_barang');
+					}
 				}
 			}
-
 		} else {
 			$this->data['success'] = false;
 			$this->data['message'] = 'Opss validation failed';
@@ -146,8 +131,7 @@ class Kategori_barang extends Admin
 	*
 	* @var $id String
 	*/
-	public function edit($id)
-	{
+	public function edit($id) {
 		$this->is_allowed('kategori_barang_update');
 
 		$this->data['kategori_barang'] = $this->model_kategori_barang->find($id);
@@ -161,62 +145,57 @@ class Kategori_barang extends Admin
 	*
 	* @var $id String
 	*/
-	public function edit_save($id)
-	{
+	public function edit_save($id) {
 		if (!$this->is_allowed('kategori_barang_update', false)) {
 			echo json_encode([
 				'success' => false,
 				'message' => cclang('sorry_you_do_not_have_permission_to_access')
-				]);
+			]);
+
 			exit;
 		}
-				$this->form_validation->set_rules('kategori_barang_nama', 'Nama Kategori', 'trim|required');
-		
 
+		$this->form_validation->set_rules('kategori_barang_nama', 'Nama Kategori', 'trim|required');
+
+		$nama_kategori = $this->input->post('kategori_barang_nama');
+
+		$data_kategori = $this->db->where(['LOWER(kategori_barang_nama)' => strtolower($nama_kategori), 'kategori_barang_id !=' => $id])->get('kategori_barang')->row();
 		
 		if ($this->form_validation->run()) {
-		
-			$save_data = [
-				'kategori_barang_nama' => $this->input->post('kategori_barang_nama'),
-			];
-
-			
-
-			
-
-
-			
-			
-			$save_kategori_barang = $this->model_kategori_barang->change($id, $save_data);
-
-			if ($save_kategori_barang) {
-
+			if (count($data_kategori) > 0) {
+				$this->data['success'] = false;
+				$this->data['message'] = 'Data sudah tersedia!';
+			}else{
+				$save_data = [
+					'kategori_barang_nama' => $nama_kategori,
+				];
 				
-
-				
-				
-				if ($this->input->post('save_type') == 'stay') {
-					$this->data['success'] = true;
-					$this->data['id'] 	   = $id;
-					$this->data['message'] = cclang('success_update_data_stay', [
-						anchor('administrator/kategori_barang', ' Go back to list')
-					]);
+				$save_kategori_barang = $this->model_kategori_barang->change($id, $save_data);
+	
+				if ($save_kategori_barang) {
+					if ($this->input->post('save_type') == 'stay') {
+						$this->data['success'] = true;
+						$this->data['id'] 	   = $id;
+						$this->data['message'] = cclang('success_update_data_stay', [
+							anchor('administrator/kategori_barang', ' Go back to list')
+						]);
+					} else {
+						set_message(
+							cclang('success_update_data_redirect', [
+						]), 'success');
+	
+						$this->data['success'] = true;
+						$this->data['redirect'] = base_url('administrator/kategori_barang');
+					}
 				} else {
-					set_message(
-						cclang('success_update_data_redirect', [
-					]), 'success');
-
-            		$this->data['success'] = true;
-					$this->data['redirect'] = base_url('administrator/kategori_barang');
-				}
-			} else {
-				if ($this->input->post('save_type') == 'stay') {
-					$this->data['success'] = false;
-					$this->data['message'] = cclang('data_not_change');
-				} else {
-            		$this->data['success'] = false;
-            		$this->data['message'] = cclang('data_not_change');
-					$this->data['redirect'] = base_url('administrator/kategori_barang');
+					if ($this->input->post('save_type') == 'stay') {
+						$this->data['success'] = false;
+						$this->data['message'] = cclang('data_not_change');
+					} else {
+						$this->data['success'] = false;
+						$this->data['message'] = cclang('data_not_change');
+						$this->data['redirect'] = base_url('administrator/kategori_barang');
+					}
 				}
 			}
 		} else {

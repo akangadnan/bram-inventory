@@ -9,30 +9,35 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 *| user site
 *|
 */
-class User extends Admin	
-{
-	
-	public function __construct()
-	{
+class User extends Admin {
+	public function __construct() {
 		parent::__construct();
 
 		$this->load->model('model_user');
 	}
+
+	// public function nyoba() {
+	// 	do {
+	// 		if (!in_array($x = angka_acak(1), [0,1,2,3,4,5,6])) {
+	// 			echo $x;
+	// 			break;
+	// 		}
+	// 	} while (!array_key_exists($x = angka_acak(1), [0,1,2,3,4,5,6]));
+	// }
 
 	/**
 	* show all users
 	*
 	* @var $offset String
 	*/
-	public function index($offset = 0)
-	{
+	public function index($offset = 0) {
 		$this->is_allowed('user_list');
 
 		$filter = $this->input->get('q');
 		$field 	= $this->input->get('f');
 
-		$this->data['users'] = $this->model_user->get($filter, $field, $this->limit_page, $offset);
-		$this->data['user_counts'] = $this->model_user->count_all($filter, $field);
+		$this->data['users'] 		= $this->model_user->get($filter, $field, $this->limit_page, $offset);
+		$this->data['user_counts'] 	= $this->model_user->count_all($filter, $field);
 
 		$config = [
 			'base_url'     => 'administrator/user/index/',
@@ -51,8 +56,7 @@ class User extends Admin
 	* show all users
 	*
 	*/
-	public function add()
-	{
+	public function add() {
 		$this->is_allowed('user_add');
 
 		$this->template->title('User New');
@@ -64,13 +68,12 @@ class User extends Admin
 	*
 	* @return JSON
 	*/
-	public function add_save()
-	{
+	public function add_save() {
 		if (!$this->is_allowed('user_add', false)) {
 			return $this->response([
 				'success' => false,
 				'message' => cclang('sorry_you_do_not_have_permission_to_access')
-				]);
+			]);
 		}
 
 		$this->form_validation->set_rules('username', 'Username', 'trim|required|is_unique[aauth_users.username]');
@@ -89,7 +92,6 @@ class User extends Admin
 			];
 
 			if (!empty($user_avatar_name)) {
-
 				$user_avatar_name_copy = date('YmdHis') . '-' . $user_avatar_name;
 
 				if (!is_dir(FCPATH . '/uploads/user')) {
@@ -105,7 +107,16 @@ class User extends Admin
 			$save_user = $this->aauth->create_user($this->input->post('email'), $this->input->post('password'), $this->input->post('username'), $save_data);
 
 			if ($save_user) {
-				//add user to group
+				$simpan_user = [
+					'user_auth_id' 		=> $save_user,
+					'user_nama' 		=> $this->input->post('full_name'),
+					'user_bidang_id' 	=> $this->input->post('bidang'),
+					'user_user_created' => get_user_data('id'),
+					'user_created_at' 	=> date('Y-m-d H:i:s'),
+				];
+
+				$this->db->insert('users', $simpan_user);
+
 				if (count($this->input->post('group'))) {
 					$user_id = $save_user;
 					foreach ($this->input->post('group') as $group_id) {
@@ -131,7 +142,6 @@ class User extends Admin
 				$this->response['success'] = false;
 				$this->response['message'] = $this->aauth->print_errors();
 			}
-
 		} else {
 			$this->response['success'] = false;
 			$this->response['message'] = validation_errors();
@@ -145,8 +155,7 @@ class User extends Admin
 	*
 	* @var $id String
 	*/
-	public function edit($id)
-	{
+	public function edit($id) {
 		$this->is_allowed('user_update');
 
 		$this->data = [
@@ -163,13 +172,12 @@ class User extends Admin
 	*
 	* @var $id String
 	*/
-	public function edit_save($id)
-	{
+	public function edit_save($id) {
 		if (!$this->is_allowed('user_update', false)) {
 			return $this->response([
 				'success' => false,
 				'message' => cclang('sorry_you_do_not_have_permission_to_access')
-				]);
+			]);
 		}
 
 		$this->form_validation->set_rules('username', 'Username', 'trim|required');
@@ -211,7 +219,13 @@ class User extends Admin
 			$save_user = $this->aauth->update_user($id, $this->input->post('email'), $password, $this->input->post('username'), $save_data);
 
 			if ($save_user) {
-				//update user to group
+				$simpan_user = [
+					'user_nama' 		=> $this->input->post('full_name'),
+					'user_bidang_id' 	=> $this->input->post('bidang'),
+				];
+
+				$this->db->update('users', $simpan_user, ['user_auth_id' => $id]);
+
 				$this->db->delete('aauth_user_to_group', ['user_id' => $id]);
 				if (count($this->input->post('group'))) {
 					foreach ($this->input->post('group') as $group_id) {
@@ -236,7 +250,6 @@ class User extends Admin
 				$this->response['success'] = false;
 				$this->response['message'] = cclang('data_not_change').$this->aauth->print_errors();
 			}
-
 		} else {
 			$this->response['success'] = false;
 			$this->response['message'] = validation_errors();
@@ -250,8 +263,7 @@ class User extends Admin
 	*
 	* @var $id String
 	*/
-	public function delete($id = null)
-	{
+	public function delete($id = null) {
 		$this->is_allowed('user_delete');
 
 		$this->load->helper('file');
@@ -281,8 +293,7 @@ class User extends Admin
 	*
 	* @var $id String
 	*/
-	public function view($id)
-	{
+	public function view($id) {
 		$this->is_allowed('user_view');
 
 		$this->data['user'] = $this->model_user->find($id);
@@ -295,8 +306,7 @@ class User extends Admin
 	* Profile user
 	*
 	*/
-	public function profile()
-	{
+	public function profile() {
 		$this->is_allowed('user_profile');
 
 		$this->data['user'] = $this->model_user->find($this->aauth->get_user()->id);
@@ -309,8 +319,7 @@ class User extends Admin
 	* Update view profile
 	*
 	*/
-	public function edit_profile()
-	{
+	public function edit_profile() {
 		$this->is_allowed('user_update_profile');
 		$id_user = $this->aauth->get_user()->id;
 		$this->data = [
@@ -327,13 +336,12 @@ class User extends Admin
 	*
 	* @var $id String
 	*/
-	public function edit_profile_save($id)
-	{
+	public function edit_profile_save($id) {
 		if (!$this->is_allowed('user_update_profile', false)) {
 			return $this->response([
 				'success' => false,
 				'message' => cclang('sorry_you_do_not_have_permission_to_access')
-				]);
+			]);
 		}
 
 		$this->form_validation->set_rules('username', 'Username', 'trim|required');
@@ -395,8 +403,7 @@ class User extends Admin
 	*
 	* @var $id String
 	*/
-	private function _remove($id)
-	{
+	private function _remove($id) {
 		$user = $this->model_user->find($id);
 
 		if (!empty($user->image)) {
@@ -415,13 +422,12 @@ class User extends Admin
 	* 
 	* @return JSON
 	*/
-	public function upload_avatar_file()
-	{
+	public function upload_avatar_file() {
 		if (!$this->is_allowed('user_add', false)) {
 			return $this->response([
 				'success' => false,
 				'message' => cclang('sorry_you_do_not_have_permission_to_access')
-				]);
+			]);
 		}
 
 		$uuid = $this->input->post('qquuid');
@@ -462,13 +468,12 @@ class User extends Admin
 	* 
 	* @return JSON
 	*/
-	public function delete_avatar_file($uuid)
-	{
+	public function delete_avatar_file($uuid) {
 		if (!$this->is_allowed('user_delete', false)) {
 			return $this->response([
 				'success' => false,
 				'message' => cclang('sorry_you_do_not_have_permission_to_access')
-				]);
+			]);
 		}
 
 		if (!empty($uuid)) {
@@ -526,13 +531,12 @@ class User extends Admin
 	* 
 	* @return JSON
 	*/
-	public function get_avatar_file($id)
-	{
+	public function get_avatar_file($id) {
 		if (!$this->is_allowed('user_update', false)) {
 			return $this->response([
 				'success' => false,
 				'message' => cclang('sorry_you_do_not_have_permission_to_access')
-				]);
+			]);
 		}
 		$this->load->helper('file');
 		
@@ -566,14 +570,14 @@ class User extends Admin
 	*
 	* @return JSON
 	*/
-	public function set_status()
-	{
+	public function set_status() {
 		if (!$this->is_allowed('user_update_status', false)) {
 			return $this->response([
 				'success' => false,
 				'message' => cclang('sorry_you_do_not_have_permission_to_access')
 				]);
 		}
+
 		$status = $this->input->post('status');
 		$id = $this->input->post('id');
 
@@ -601,8 +605,7 @@ class User extends Admin
 	*
 	* @return Files Excel .xls
 	*/
-	public function export()
-	{
+	public function export() {
 		$this->is_allowed('user_export');
 		$this->model_user->export('aauth_users', 'user');
 	}
@@ -612,8 +615,7 @@ class User extends Admin
 	*
 	* @return Files PDF .pdf
 	*/
-	public function export_pdf()
-	{
+	public function export_pdf() {
 		$this->is_allowed('user_export');
 
 		$this->model_user->pdf('aauth_users', 'User');

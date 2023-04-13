@@ -1,30 +1,3 @@
-
-
-<script src="<?= BASE_ASSET; ?>/js/jquery.hotkeys.js"></script>
-<script type="text/javascript">
-    function domo() {
-
-        // Binding keys
-        $('*').bind('keydown', 'Ctrl+s', function assets() {
-            $('#btn_save').trigger('click');
-            return false;
-        });
-
-        $('*').bind('keydown', 'Ctrl+x', function assets() {
-            $('#btn_cancel').trigger('click');
-            return false;
-        });
-
-        $('*').bind('keydown', 'Ctrl+d', function assets() {
-            $('.btn_save_back').trigger('click');
-            return false;
-        });
-
-    }
-
-    jQuery(document).ready(domo);
-</script>
-<!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
         Kategori Barang        <small>Edit Kategori Barang</small>
@@ -43,7 +16,7 @@
 <section class="content">
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-warning">
+            <div class="box box-primary">
                 <div class="box-body ">
                     <!-- Widget: user widget style 1 -->
                     <div class="box box-widget widget-user-2">
@@ -194,7 +167,7 @@
                 }
                 $('.message').printMessage({
                     message: res.message,
-                    type: 'warning'
+                    type: 'danger'
                 });
             }
 
@@ -202,7 +175,7 @@
         .fail(function() {
             $('.message').printMessage({
                 message: 'Error save data',
-                type: 'warning'
+                type: 'danger'
             });
         })
         .always(function() {

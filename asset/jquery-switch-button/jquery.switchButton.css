@@ -42,3 +42,8 @@
     -moz-border-radius: 4px;
     border-radius: 4px;
 }
+
+.switch-button-background.checked {
+	background: #00a65a;
+	border: 1px solid #008d4c;
+}

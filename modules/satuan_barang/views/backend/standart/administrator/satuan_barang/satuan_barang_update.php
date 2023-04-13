@@ -1,30 +1,3 @@
-
-
-<script src="<?= BASE_ASSET; ?>/js/jquery.hotkeys.js"></script>
-<script type="text/javascript">
-    function domo() {
-
-        // Binding keys
-        $('*').bind('keydown', 'Ctrl+s', function assets() {
-            $('#btn_save').trigger('click');
-            return false;
-        });
-
-        $('*').bind('keydown', 'Ctrl+x', function assets() {
-            $('#btn_cancel').trigger('click');
-            return false;
-        });
-
-        $('*').bind('keydown', 'Ctrl+d', function assets() {
-            $('.btn_save_back').trigger('click');
-            return false;
-        });
-
-    }
-
-    jQuery(document).ready(domo);
-</script>
-<!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
         Satuan Barang        <small>Edit Satuan Barang</small>
@@ -194,7 +167,7 @@
                 }
                 $('.message').printMessage({
                     message: res.message,
-                    type: 'warning'
+                    type: 'danger'
                 });
             }
 
@@ -202,7 +175,7 @@
         .fail(function() {
             $('.message').printMessage({
                 message: 'Error save data',
-                type: 'warning'
+                type: 'danger'
             });
         })
         .always(function() {

@@ -1,28 +1,3 @@
-
-<script src="<?= BASE_ASSET; ?>/js/jquery.hotkeys.js"></script>
-<script type="text/javascript">
-    function domo() {
-
-        // Binding keys
-        $('*').bind('keydown', 'Ctrl+s', function assets() {
-            $('#btn_save').trigger('click');
-            return false;
-        });
-
-        $('*').bind('keydown', 'Ctrl+x', function assets() {
-            $('#btn_cancel').trigger('click');
-            return false;
-        });
-
-        $('*').bind('keydown', 'Ctrl+d', function assets() {
-            $('.btn_save_back').trigger('click');
-            return false;
-        });
-
-    }
-
-    jQuery(document).ready(domo);
-</script>
 <style>
 
 </style>
@@ -41,7 +16,7 @@
 <section class="content">
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-warning">
+            <div class="box box-primary">
                 <div class="box-body ">
                     <!-- Widget: user widget style 1 -->
                     <div class="box box-widget widget-user-2">
@@ -167,7 +142,7 @@
     $('.loading').show();
 
     $.ajax({
-            url: BASE_URL + '/administrator/kategori_barang/add_save',
+            url: BASE_URL + 'administrator/kategori_barang/add_save',
             type: 'POST',
             dataType: 'json',
             data: data_post,
@@ -192,7 +167,6 @@
             
             } else {
                 if (res.errors) {
-
                     $.each(res.errors, function(index, val) {
                         $('form #' + index).parents('.form-group').addClass('has-error');
                         $('form #' + index).parents('.form-group').find('small').prepend(`
@@ -208,15 +182,14 @@
                 }
                 $('.message').printMessage({
                     message: res.message,
-                    type: 'warning'
+                    type: 'danger'
                 });
             }
-
         })
         .fail(function() {
             $('.message').printMessage({
                 message: 'Error save data',
-                type: 'warning'
+                type: 'danger'
             });
         })
         .always(function() {

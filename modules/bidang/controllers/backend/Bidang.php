@@ -78,7 +78,7 @@ class Bidang extends Admin
 
 		$nama_bidang = $this->input->post('bidang_nama');
 
-		$data_bidang = $this->db->where('bidang_nama', $nama_bidang)->get('bidang')->row();
+		$data_bidang = $this->db->where('LOWER(bidang_nama)', strtolower($nama_bidang))->get('bidang')->row();
 
 		if ($this->form_validation->run()) {
 			if (count($data_bidang) > 0) {
@@ -163,7 +163,7 @@ class Bidang extends Admin
 
 		$nama_bidang = $this->input->post('bidang_nama');
 
-		$data_bidang = $this->db->where(['bidang_nama' => $nama_bidang, 'bidang_id' => $id])->get('bidang')->row();
+		$data_bidang = $this->db->where(['LOWER(bidang_nama)' => strtolower($nama_bidang), 'bidang_id' => $id])->get('bidang')->row();
 
 		if ($this->form_validation->run()) {
 			if (count($data_bidang) > 0) {

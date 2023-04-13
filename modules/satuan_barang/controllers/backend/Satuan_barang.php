@@ -9,11 +9,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 *| Satuan Barang site
 *|
 */
-class Satuan_barang extends Admin	
-{
-	
-	public function __construct()
-	{
+class Satuan_barang extends Admin {
+	public function __construct() {
 		parent::__construct();
 
 		$this->load->model('model_satuan_barang');
@@ -26,8 +23,7 @@ class Satuan_barang extends Admin
 	*
 	* @var $offset String
 	*/
-	public function index($offset = 0)
-	{
+	public function index($offset = 0) {
 		$this->is_allowed('satuan_barang_list');
 
 		$filter = $this->input->get('q');
@@ -53,8 +49,7 @@ class Satuan_barang extends Admin
 	* Add new satuan_barangs
 	*
 	*/
-	public function add()
-	{
+	public function add() {
 		$this->is_allowed('satuan_barang_add');
 
 		$this->template->title('Satuan Barang New');
@@ -66,72 +61,63 @@ class Satuan_barang extends Admin
 	*
 	* @return JSON
 	*/
-	public function add_save()
-	{
+	public function add_save() {
 		if (!$this->is_allowed('satuan_barang_add', false)) {
 			echo json_encode([
 				'success' => false,
 				'message' => cclang('sorry_you_do_not_have_permission_to_access')
-				]);
+			]);
+
 			exit;
 		}
-		
-		
 
 		$this->form_validation->set_rules('satuan_nama', 'Nama Satuan', 'trim|required');
-		
 
-		
+		$nama_satuan = $this->input->post('satuan_nama');
+
+		$data_satuan = $this->db->where('LOWER(satuan_barang_nama)', $nama_satuan)->get('satuan_barang')->row();
 
 		if ($this->form_validation->run()) {
-		
-			$save_data = [
-				'satuan_nama' => $this->input->post('satuan_nama'),
-				'satuan_user_created' => get_user_data('id'),				'satuan_created_at' => date('Y-m-d H:i:s'),
-			];
+			if (count($data_satuan) > 0) {
+				$this->data['success'] = false;
+				$this->data['message'] = 'Data sudah tersedia! <a href="'.site_url('administrator/satuan_barang/view/'.$data_satuan->satuan_barang_id).'">Lihat Data</a>';
+			}else{
+				$save_data = [
+					'satuan_nama' 			=> $nama_satuan,
+					'satuan_user_created' 	=> get_user_data('id'),
+					'satuan_created_at' 	=> date('Y-m-d H:i:s'),
+				];
 
-			
-			
+				$save_satuan_barang = $this->model_satuan_barang->store($save_data);
 
-
-
-			
-			
-			$save_satuan_barang = $id = $this->model_satuan_barang->store($save_data);
-            
-
-			if ($save_satuan_barang) {
-				
-				
-					
-				
-				if ($this->input->post('save_type') == 'stay') {
-					$this->data['success'] = true;
-					$this->data['id'] 	   = $save_satuan_barang;
-					$this->data['message'] = cclang('success_save_data_stay', [
-						anchor('administrator/satuan_barang/edit/' . $save_satuan_barang, 'Edit Satuan Barang'),
-						anchor('administrator/satuan_barang', ' Go back to list')
-					]);
+				if ($save_satuan_barang) {
+					if ($this->input->post('save_type') == 'stay') {
+						$this->data['success'] = true;
+						$this->data['id'] 	   = $save_satuan_barang;
+						$this->data['message'] = cclang('success_save_data_stay', [
+							anchor('administrator/satuan_barang/edit/' . $save_satuan_barang, 'Edit Satuan Barang'),
+							anchor('administrator/satuan_barang', ' Go back to list')
+						]);
+					} else {
+						set_message(
+							cclang('success_save_data_redirect', [
+							anchor('administrator/satuan_barang/edit/' . $save_satuan_barang, 'Edit Satuan Barang')
+						]), 'success');
+	
+						$this->data['success'] = true;
+						$this->data['redirect'] = base_url('administrator/satuan_barang');
+					}
 				} else {
-					set_message(
-						cclang('success_save_data_redirect', [
-						anchor('administrator/satuan_barang/edit/' . $save_satuan_barang, 'Edit Satuan Barang')
-					]), 'success');
-
-            		$this->data['success'] = true;
-					$this->data['redirect'] = base_url('administrator/satuan_barang');
-				}
-			} else {
-				if ($this->input->post('save_type') == 'stay') {
-					$this->data['success'] = false;
-					$this->data['message'] = cclang('data_not_change');
-				} else {
-            		$this->data['success'] = false;
-            		$this->data['message'] = cclang('data_not_change');
-					$this->data['redirect'] = base_url('administrator/satuan_barang');
+					if ($this->input->post('save_type') == 'stay') {
+						$this->data['success'] = false;
+						$this->data['message'] = cclang('data_not_change');
+					} else {
+						$this->data['success'] = false;
+						$this->data['message'] = cclang('data_not_change');
+						$this->data['redirect'] = base_url('administrator/satuan_barang');
+					}
 				}
 			}
-
 		} else {
 			$this->data['success'] = false;
 			$this->data['message'] = 'Opss validation failed';
@@ -146,8 +132,7 @@ class Satuan_barang extends Admin
 	*
 	* @var $id String
 	*/
-	public function edit($id)
-	{
+	public function edit($id) {
 		$this->is_allowed('satuan_barang_update');
 
 		$this->data['satuan_barang'] = $this->model_satuan_barang->find($id);
@@ -161,62 +146,57 @@ class Satuan_barang extends Admin
 	*
 	* @var $id String
 	*/
-	public function edit_save($id)
-	{
+	public function edit_save($id) {
 		if (!$this->is_allowed('satuan_barang_update', false)) {
 			echo json_encode([
 				'success' => false,
 				'message' => cclang('sorry_you_do_not_have_permission_to_access')
-				]);
+			]);
+
 			exit;
 		}
-				$this->form_validation->set_rules('satuan_nama', 'Nama Satuan', 'trim|required');
-		
 
-		
+		$this->form_validation->set_rules('satuan_nama', 'Nama Satuan', 'trim|required');
+
+		$nama_satuan = $this->input->post('satuan_nama');
+
+		$data_satuan = $this->db->where(['LOWER(satuan_barang_nama)' => $nama_satuan, 'satuan_barang_id !=' => $id])->get('satuan_barang')->row();
+
 		if ($this->form_validation->run()) {
-		
-			$save_data = [
-				'satuan_nama' => $this->input->post('satuan_nama'),
-			];
-
-			
-
-			
-
-
-			
-			
-			$save_satuan_barang = $this->model_satuan_barang->change($id, $save_data);
-
-			if ($save_satuan_barang) {
-
-				
-
-				
-				
-				if ($this->input->post('save_type') == 'stay') {
-					$this->data['success'] = true;
-					$this->data['id'] 	   = $id;
-					$this->data['message'] = cclang('success_update_data_stay', [
-						anchor('administrator/satuan_barang', ' Go back to list')
-					]);
+			if (count($data_satuan) > 0) {
+				$this->data['success'] = false;
+				$this->data['message'] = 'Data sudah tersedia!';
+			}else{
+				$save_data = [
+					'satuan_nama' => $this->input->post('satuan_nama'),
+				];
+	
+				$save_satuan_barang = $this->model_satuan_barang->change($id, $save_data);
+	
+				if ($save_satuan_barang) {
+					if ($this->input->post('save_type') == 'stay') {
+						$this->data['success'] = true;
+						$this->data['id'] 	   = $id;
+						$this->data['message'] = cclang('success_update_data_stay', [
+							anchor('administrator/satuan_barang', ' Go back to list')
+						]);
+					} else {
+						set_message(
+							cclang('success_update_data_redirect', [
+						]), 'success');
+	
+						$this->data['success'] = true;
+						$this->data['redirect'] = base_url('administrator/satuan_barang');
+					}
 				} else {
-					set_message(
-						cclang('success_update_data_redirect', [
-					]), 'success');
-
-            		$this->data['success'] = true;
-					$this->data['redirect'] = base_url('administrator/satuan_barang');
-				}
-			} else {
-				if ($this->input->post('save_type') == 'stay') {
-					$this->data['success'] = false;
-					$this->data['message'] = cclang('data_not_change');
-				} else {
-            		$this->data['success'] = false;
-            		$this->data['message'] = cclang('data_not_change');
-					$this->data['redirect'] = base_url('administrator/satuan_barang');
+					if ($this->input->post('save_type') == 'stay') {
+						$this->data['success'] = false;
+						$this->data['message'] = cclang('data_not_change');
+					} else {
+						$this->data['success'] = false;
+						$this->data['message'] = cclang('data_not_change');
+						$this->data['redirect'] = base_url('administrator/satuan_barang');
+					}
 				}
 			}
 		} else {
@@ -233,8 +213,7 @@ class Satuan_barang extends Admin
 	*
 	* @var $id String
 	*/
-	public function delete($id = null)
-	{
+	public function delete($id = null) {
 		$this->is_allowed('satuan_barang_delete');
 
 		$this->load->helper('file');
