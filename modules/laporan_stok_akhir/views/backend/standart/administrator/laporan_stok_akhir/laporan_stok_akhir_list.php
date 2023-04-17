@@ -144,7 +144,7 @@
 											<td><?= $no++;?></td>
 											<td><?= $laporan_stok_akhir[$item->barang_id]['nama_barang'];?></td>
 											<td><?= join_multi_select($laporan_stok_akhir[$item->barang_id]['kategori_barang'], 'kategori_barang', 'kategori_barang_id', 'kategori_barang_nama');?></td>
-											<td><?= join_multi_select($laporan_stok_akhir[$item->barang_id]['satuan_barang'], 'Satuan_barang', 'satuan_id', 'satuan_nama')?></td>
+											<td><?= join_multi_select($laporan_stok_akhir[$item->barang_id]['satuan_barang'], 'satuan_barang', 'satuan_id', 'satuan_nama')?></td>
 											<td><?= !empty($laporan_stok_akhir[$item->barang_id]['stok_akhir']) ? $laporan_stok_akhir[$item->barang_id]['stok_akhir'] : 0?></td>
 										</tr>
 								<?php
