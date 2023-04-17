@@ -178,7 +178,7 @@
 											<td><?= $no++;?></td>
 											<td><?= $laporan_mutasi[$item->barang_id]['nama_barang'];?></td>
 											<td><?= join_multi_select($laporan_mutasi[$item->barang_id]['kategori_barang'], 'kategori_barang', 'kategori_barang_id', 'kategori_barang_nama');?></td>
-											<td><?= join_multi_select($laporan_mutasi[$item->barang_id]['satuan_barang'], 'Satuan_barang', 'satuan_id', 'satuan_nama')?></td>
+											<td><?= join_multi_select($laporan_mutasi[$item->barang_id]['satuan_barang'], 'satuan_barang', 'satuan_id', 'satuan_nama')?></td>
 											<td><?= !empty($laporan_mutasi[$item->barang_id]['stok_awal']) ? $laporan_mutasi[$item->barang_id]['stok_awal'] : 0?></td>
 											<td><?= !empty($laporan_mutasi[$item->barang_id]['stok_masuk']) ? $laporan_mutasi[$item->barang_id]['stok_masuk'] : 0?></td>
 											<td><?= !empty($laporan_mutasi[$item->barang_id]['stok_keluar']) ? $laporan_mutasi[$item->barang_id]['stok_keluar'] : 0?></td>

@@ -80,6 +80,7 @@ class Laporan_mutasi extends Admin {
 
 		$stok_keluar_masuk = $this->stok_keluar_masuk($get_kategori, $get_bidang, $get_periode, $get_bulan, $get_tahun, $get_tgl_awal, $get_tgl_akhir);
 
+		$conditions = [];
 		if (!empty($get_kategori)) {
 			$conditions = ['barang_kategori_barang_id' => $get_kategori];
 		}
