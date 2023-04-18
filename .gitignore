@@ -26,6 +26,7 @@ index.php
 .htaccess
 
 package/
+modules/auth/views/backend/standart/administrator/*.old
 
 .vscode
 

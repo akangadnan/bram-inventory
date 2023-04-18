@@ -126,7 +126,7 @@ $config_aauth["default"] = array(
     'max_login_attempt_time_period'  => "5 minutes",
     'remove_successful_attempts'     => true,
 
-    'login_with_name'                => false,
+    'login_with_name'                => true,
 
     'email'                          => 'admin@admin.com',
     'name'                           => 'Cicool No reply',
