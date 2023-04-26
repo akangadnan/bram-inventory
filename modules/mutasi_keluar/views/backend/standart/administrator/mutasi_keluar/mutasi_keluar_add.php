@@ -53,14 +53,14 @@
 							<hr>
 						</div>
 						<?= form_open('', [
-							'name' => 'form_mutasi_keluar',
-							'class' => 'form-horizontal form-step',
-							'id' => 'form_mutasi_keluar',
-							'enctype' => 'multipart/form-data',
-							'method' => 'POST'
-						]);
+								'name' 		=> 'form_mutasi_keluar',
+								'class' 	=> 'form-horizontal form-step',
+								'id' 		=> 'form_mutasi_keluar',
+								'enctype' 	=> 'multipart/form-data',
+								'method' 	=> 'POST'
+							]);
 
-						$user_groups = $this->model_group->get_user_group_ids();
+							$user_groups = $this->model_group->get_user_group_ids();
 						?>
 						<div class="form-group group-mutasi_keluar_tgl_keluar ">
 							<label for="mutasi_keluar_tgl_keluar" class="col-sm-2 control-label">Tanggal Keluar <i class="required">*</i></label>
@@ -75,12 +75,22 @@
 						<div class="form-group group-mutasi_keluar_bidang_id ">
 							<label for="mutasi_keluar_bidang_id" class="col-sm-2 control-label">Bidang <i class="required">*</i></label>
 							<div class="col-sm-8">
-								<select class="form-control chosen chosen-select-deselect" name="mutasi_keluar_bidang_id" id="mutasi_keluar_bidang_id" data-placeholder="Select Bidang">
-									<option value=""></option>
-									<?php foreach (db_get_all_data('bidang') as $row): ?>
-									<option value="<?= $row->bidang_id ?>"><?= $row->bidang_nama; ?></option>
-									<?php endforeach; ?>
-								</select>
+					<?php
+						if ($this->aauth->is_member(4)) {
+					?>
+							<label class="form-control"><?= join_multi_select($this->session->userdata('id_bidang'), 'bidang', 'bidang_id', 'bidang_nama').' ('.join_multi_select($this->session->userdata('id_bidang'), 'bidang', 'bidang_id', 'bidang_subyek').')';?></label>
+					<?php
+						}else{
+					?>
+						<select class="form-control chosen chosen-select-deselect" name="mutasi_keluar_bidang_id" id="mutasi_keluar_bidang_id" data-placeholder="Select Bidang">
+							<option value=""></option>
+							<?php foreach (db_get_all_data('bidang') as $row): ?>
+							<option value="<?= $row->bidang_id ?>"><?= $row->bidang_nama.' ('.$row->bidang_subyek.')'; ?></option>
+							<?php endforeach; ?>
+						</select>
+					<?php
+						}
+					?>
 								<small class="info help-block"></small>
 							</div>
 						</div>

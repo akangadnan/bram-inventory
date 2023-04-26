@@ -169,28 +169,37 @@
 											?>
 											</td>
 											<td width="300">
-											<?php if ($mutasi_keluar->mutasi_keluar_verified == 0) {
-												is_allowed('mutasi_keluar_verify', function() use ($mutasi_keluar){?>
-												<a href="javascript:void(0);" data-href="<?= site_url('administrator/mutasi_keluar/verify/' . $mutasi_keluar->mutasi_keluar_id); ?>" class="label-default verify-data">
-													<i class="fa fa-check"></i> Verifikasi
-												</a>
-											<?php }); }?>
-												<?php is_allowed('mutasi_keluar_view', function() use ($mutasi_keluar){?>
-												<a href="<?= site_url('administrator/mutasi_keluar/view/' . $mutasi_keluar->mutasi_keluar_id); ?>"
-													class="label-default"><i class="fa fa-newspaper-o"></i>
-													<?= cclang('view_button'); ?>
-													<?php }) ?>
-													<?php is_allowed('mutasi_keluar_update', function() use ($mutasi_keluar){?>
-													<a href="<?= site_url('administrator/mutasi_keluar/edit/' . $mutasi_keluar->mutasi_keluar_id); ?>"
-														class="label-default"><i class="fa fa-edit"></i>
-														<?= cclang('update_button'); ?></a>
-													<?php }) ?>
-													<?php is_allowed('mutasi_keluar_delete', function() use ($mutasi_keluar){?>
-													<a href="javascript:void(0);"
-														data-href="<?= site_url('administrator/mutasi_keluar/delete/' . $mutasi_keluar->mutasi_keluar_id); ?>"
-														class="label-default remove-data"><i class="fa fa-close"></i>
-														<?= cclang('remove_button'); ?></a>
-													<?php }) ?>
+										<?php
+											if ($mutasi_keluar->mutasi_keluar_verified == 0) {
+												is_allowed('mutasi_keluar_verify', function() use ($mutasi_keluar) {
+										?>
+											<a href="javascript:void(0);" data-href="<?= site_url('administrator/mutasi_keluar/verify/' . $mutasi_keluar->mutasi_keluar_id); ?>" class="label-default verify-data">
+												<i class="fa fa-check"></i> Verifikasi </a>
+										<?php
+												});
+											}
+
+											is_allowed('mutasi_keluar_view', function() use ($mutasi_keluar) {
+										?>
+											<a href="<?= site_url('administrator/mutasi_keluar/view/' . $mutasi_keluar->mutasi_keluar_id); ?>" class="label-default">
+												<i class="fa fa-newspaper-o"></i> <?= cclang('view_button'); ?></a>
+										<?php
+											});
+
+											if ($mutasi_keluar->mutasi_keluar_verified == 0) {
+												is_allowed('mutasi_keluar_update', function() use ($mutasi_keluar) {
+										?>
+											<a href="<?= site_url('administrator/mutasi_keluar/edit/' . $mutasi_keluar->mutasi_keluar_id); ?>" class="label-default">
+												<i class="fa fa-edit"></i> <?= cclang('update_button'); ?></a>
+										<?php
+												});
+											}
+
+											is_allowed('mutasi_keluar_delete', function() use ($mutasi_keluar) {
+										?>
+											<a href="javascript:void(0);" data-href="<?= site_url('administrator/mutasi_keluar/delete/' . $mutasi_keluar->mutasi_keluar_id); ?>" class="label-default remove-data">
+												<i class="fa fa-close"></i> <?= cclang('remove_button'); ?></a>
+										<?php });?>
 
 											</td>
 										</tr>

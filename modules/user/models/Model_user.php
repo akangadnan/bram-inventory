@@ -85,6 +85,7 @@ class Model_user extends MY_Model {
 	public function join_available() {
 		$this->db->join('users', 'user_auth_id = aauth_users.id', 'LEFT');
 		$this->db->join('bidang', 'bidang_id = user_bidang_id', 'LEFT');
+		$this->db->order_by('id', 'DESC');
 
 		return $this;
 	}

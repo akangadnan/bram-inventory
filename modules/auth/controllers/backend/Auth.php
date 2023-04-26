@@ -37,6 +37,14 @@ class Auth extends Admin
 			if ($this->aauth->login($this->input->post('username'), $this->input->post('password'), $this->input->post('remember'))) {
 				$ref = $this->session->userdata('redirect');
 
+				$data = db_get_all_data('users', ['user_auth_id' => get_user_data('id')])[0];
+
+				$session_data = [
+					'id_bidang' => $data->user_bidang_id,
+				];
+
+				$this->session->set_userdata($session_data);
+
 				if ($ref) {
 					redirect($ref, 'refresh');
 				} else {

@@ -109,7 +109,9 @@ class Model_mutasi_keluar extends MY_Model {
 
     public function filter_avaiable() {
         if (!$this->aauth->is_admin()) {
-            // $this->db->where($this->table_name.'.mutasi_keluar_user_created', get_user_data('id'));
+            if ($this->aauth->is_member(4)) {
+                $this->db->where($this->table_name.'.mutasi_keluar_bidang_id', $this->session->userdata('id_bidang'));
+            }
         }
 
         return $this;

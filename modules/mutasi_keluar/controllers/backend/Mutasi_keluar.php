@@ -15,6 +15,7 @@ class Mutasi_keluar extends Admin {
 
 		$this->load->model('model_mutasi_keluar');
 		$this->load->model('group/model_group');
+		$this->load->model('user/model_user');
 		$this->lang->load('web_lang', $this->current_lang);
 	}
 
@@ -71,9 +72,15 @@ class Mutasi_keluar extends Admin {
 		}
 
 		$this->form_validation->set_rules('mutasi_keluar_tgl_keluar', 'Tanggal Keluar', 'trim|required');
-		$this->form_validation->set_rules('mutasi_keluar_bidang_id', 'Bidang', 'trim|required');
 		$this->form_validation->set_rules('mutasi_keluar_status', 'Status', 'trim|required');
-		
+
+		if (!$this->aauth->is_member(4)) {
+			$this->form_validation->set_rules('mutasi_keluar_bidang_id', 'Bidang', 'trim|required');
+			$bidang = $this->input->post('mutasi_keluar_bidang_id');
+		}else{
+			$bidang = $this->session->userdata('id_bidang');
+		}
+
 		$barang 	= $this->input->post('id_barang[]');
 		$jumlah 	= $this->input->post('jumlah[]');
 		$keterangan = $this->input->post('keterangan_barang[]');
@@ -86,7 +93,7 @@ class Mutasi_keluar extends Admin {
 				if (count($barang) > 0) {
 					$save_data = [
 						'mutasi_keluar_tgl_keluar' 		=> $this->input->post('mutasi_keluar_tgl_keluar'),
-						'mutasi_keluar_bidang_id' 		=> $this->input->post('mutasi_keluar_bidang_id'),
+						'mutasi_keluar_bidang_id' 		=> $bidang,
 						'mutasi_keluar_status' 			=> $this->input->post('mutasi_keluar_status'),
 						'mutasi_keluar_keterangan' 		=> $this->input->post('mutasi_keluar_keterangan'),
 						'mutasi_keluar_user_created' 	=> get_user_data('id'),
@@ -179,8 +186,12 @@ class Mutasi_keluar extends Admin {
 		}
 
 		$this->form_validation->set_rules('mutasi_keluar_tgl_keluar', 'Tanggal Keluar', 'trim|required');
-		$this->form_validation->set_rules('mutasi_keluar_bidang_id', 'Bidang', 'trim|required');
 		$this->form_validation->set_rules('mutasi_keluar_status', 'Status', 'trim|required');
+
+		if (!$this->aauth->is_member(4)) {
+			$this->form_validation->set_rules('mutasi_keluar_bidang_id', 'Bidang', 'trim|required');
+			$bidang = $this->input->post('mutasi_keluar_bidang_id');
+		}
 		
 		$barang 	= $this->input->post('id_barang[]');
 		$jumlah 	= $this->input->post('jumlah[]');
@@ -192,12 +203,20 @@ class Mutasi_keluar extends Admin {
 				$this->data['message'] = 'Tidak ada data barang yang di input!';
 			}else{
 				if (count($barang) > 0) {
-					$save_data = [
-						'mutasi_keluar_tgl_keluar' 	=> $this->input->post('mutasi_keluar_tgl_keluar'),
-						'mutasi_keluar_bidang_id' 	=> $this->input->post('mutasi_keluar_bidang_id'),
-						'mutasi_keluar_status' 		=> $this->input->post('mutasi_keluar_status'),
-						'mutasi_keluar_keterangan' 	=> $this->input->post('mutasi_keluar_keterangan'),
-					];
+					if (!$this->aauth->is_member(4)) {
+						$save_data = [
+							'mutasi_keluar_tgl_keluar' 	=> $this->input->post('mutasi_keluar_tgl_keluar'),
+							'mutasi_keluar_bidang_id' 	=> $this->input->post('mutasi_keluar_bidang_id'),
+							'mutasi_keluar_status' 		=> $this->input->post('mutasi_keluar_status'),
+							'mutasi_keluar_keterangan' 	=> $this->input->post('mutasi_keluar_keterangan'),
+						];
+					}else{
+						$save_data = [
+							'mutasi_keluar_tgl_keluar' 	=> $this->input->post('mutasi_keluar_tgl_keluar'),
+							'mutasi_keluar_status' 		=> $this->input->post('mutasi_keluar_status'),
+							'mutasi_keluar_keterangan' 	=> $this->input->post('mutasi_keluar_keterangan'),
+						];
+					}
 					
 					$save_mutasi_keluar = $this->model_mutasi_keluar->change($id, $save_data);
 
